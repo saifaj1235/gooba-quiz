@@ -1,0 +1,564 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Gooba Quiz</title>
+
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 20px;
+        }
+
+        .quiz {
+            width: 600px;
+            max-width: 95%;
+            margin: 30px auto;
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-sizing: border-box;
+        }
+
+        h1 {
+            margin-top: 0;
+        }
+
+        #questionImage {
+            width: 300px;
+            max-width: 100%;
+            height: 180px;
+            object-fit: cover;
+            border-radius: 10px;
+        }
+
+        #wrongImage {
+            display: none;
+            width: 100%;
+            max-width: 335px;
+            height: auto;
+            margin: 15px auto;
+            border-radius: 10px;
+        }
+
+        #answers button {
+            display: block;
+            width: 80%;
+            max-width: 500px;
+            margin: 10px auto;
+            padding: 12px;
+            font-size: 18px;
+            cursor: pointer;
+            border: 1px solid #ccc;
+            border-radius: 8px;
+            background-color: #f5f5f5;
+        }
+
+        #answers button:hover {
+            background-color: #ddd;
+        }
+
+        #next {
+            background-color: black;
+            color: white;
+            border: none;
+            border-radius: 8px;
+            padding: 12px 20px;
+            font-size: 18px;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+
+        #score {
+            margin-top: 20px;
+        }
+
+        @media (max-width: 600px) {
+
+            body {
+                padding: 10px;
+            }
+
+            .quiz {
+                width: 100%;
+                margin: 10px auto;
+                padding: 15px;
+            }
+
+            h1 {
+                font-size: 28px;
+            }
+
+            #question {
+                font-size: 20px;
+            }
+
+            #answers button {
+                width: 95%;
+                font-size: 16px;
+            }
+
+            #next {
+                width: 95%;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+<div class="quiz">
+
+    <h1>Gooba Quiz</h1>
+
+    <img id="questionImage" src="" alt="Question">
+
+    <h2 id="question"></h2>
+
+    <div id="answers"></div>
+
+    <!-- تظهر كان كي الإجابة تكون غالطة -->
+    <img
+        id="wrongImage"
+        src="gooba.png"
+        alt="Wrong answer"
+        
+
+    >
+    <img id="correctImage" src="gooba1.png"
+     alt="Bonne réponse"
+     style="display:none; width:100%; max-width:335px; height:auto; margin:15px auto; border-radius:10px;">
+
+    <button id="next" onclick="nextQuestion()">
+        Question suivante
+    </button>
+    
+
+    <h3 id="score">Score : 0</h3>
+
+</div>
+
+
+<script>
+
+const questions = [
+
+    {
+        question: "esm 5ou gooba ili fi dubai ?",
+        answers: ["sadri", "sabri", "mouna", "zizou"],
+        correct: 1,
+        image: "tunis.jpg"
+    },
+
+    {
+        question: "esm zouz l9tatis ili jebhom zizou ?",
+        answers: ["mouza w louza", "samanta w mouza", "mouna wil janga"],
+        correct: 0,
+        image: "math.jpg"
+    },
+
+    {
+        question: "chnia al equipe ili ykawir feha zizou?",
+        answers: ["mouhamin", "taraji", "iwatch", "tunisair"],
+        correct: 2,
+        image: "mars.jpg"
+    },
+
+    {
+        question: "win yoskin gooba ?",
+        answers: ["sidi hsin", "mourouj", "madina jadida", "gamart"],
+        correct: 2,
+        image: "ocean.jpg"
+    },
+
+    {
+        question: "chnia ism moula al dar ili kareha gooba ?",
+        answers: ["am lotfi", "am mohsen", "am kamel", "gooba"],
+        correct: 1,
+        image: "continents.jpg"
+    },
+
+    {
+        question: "win wlid gooba ?",
+        answers: ["tunis", "jirba", "sudia", "dubai"],
+        correct: 2,
+        image: "lion.jpg"
+    },
+
+    {
+        question: "9adech 3mor ghaith ?",
+        answers: ["27", "30", "29", "23"],
+        correct: 2,
+        image: "tunisia.jpg"
+    },
+
+    {
+        question: "chnia la9ab zizou ?",
+        answers: ["ouerdian becha", "gesmi", "chebbi", "baoueb"],
+        correct: 3,
+        image: "math2.jpg"
+    },
+
+    {
+        question: "chnia ism gooba fi mousalsil accsident ?",
+        answers: ["loup", "sangour", "9lach", "gooba"],
+        correct: 0,
+        image: "mercury.jpg"
+    },
+
+    {
+        question: "isim 5ou mositfa bazde7 ?",
+        answers: ["rayen", "mohamed", "youssif", "achrif"],
+        correct: 2,
+        image: "elephant.jpg"
+    },
+
+    {
+        question: "chnia se9 ili yal3ib beha zizou ?",
+        answers: ["left", "right", "ma yal3abch bil se9"],
+        correct: 0,
+        image: "week.jpg"
+    },
+
+    {
+        question: "chnia ism gooba awil ma bde stream?",
+        answers: ["gooba", "mr ghaith", "mr fifa", "ghaith"],
+        correct: 2,
+        image: "paris.jpg"
+    },
+
+    {
+        question: "gooba bac chnia?",
+        answers: ["eco", "info", "technique", "ma wsilch lil bac"],
+        correct: 1,
+        image: "water.jpg"
+    },
+
+    {
+        question: "fi ana 3am hbat awil vd l gooba fil youtube?",
+        answers: ["2017", "2022", "2015", "2021"],
+        correct: 2,
+        image: "math3.jpg"
+    },
+
+    {
+        question: "chesm 9ahwa lhouma li yirkich feha gooba ?",
+        answers: ["louiza", "havana", "lfayet", "diamont"],
+        correct: 0,
+        image: "football.jpg"
+    },
+
+    {
+        question: "chism licée ili 9ra fih gooba ?",
+        answers: ["imtyez", "zahra", "borgiba", "romena"],
+        correct: 3,
+        image: "earth.jpg"
+    },
+
+    {
+        question: "fech t9ri madam hafitha li 9aret gooba fil makteb ?",
+        answers: ["arabia", "francais", "anglais", "math"],
+        correct: 1,
+        image: "year.jpg"
+    },
+
+    {
+        question: "chnia naw3it awil talifza mlikha gooba?",
+        answers: ["condor", "samsung", "lg", "telefunken"],
+        correct: 3,
+        image: "cow.jpg"
+    },
+
+    {
+        question: "fi ana 3am t3alim gooba chicha ?",
+        answers: ["bac", "1ere", "9eme", "fac"],
+        correct: 2,
+        image: "rome.jpg"
+    },
+
+    {
+        question: "chism ili y3amer fil chiech l gooba fil 9ahwa ?",
+        answers: ["zgin", "na9arat", "mouna", "hama"],
+        correct: 1,
+        image: "math4.jpg"
+    }
+
+];
+
+
+let currentQuestion = 0;
+let score = 0;
+let answered = false;
+
+
+/* =========================
+   AFFICHER LA QUESTION
+========================= */
+
+function showQuestion() {
+
+    answered = false;
+
+    // نخبيو تصويرة الإجابة الغالطة
+    document.getElementById("wrongImage").style.display = "none";
+
+    let q = questions[currentQuestion];
+
+    document.getElementById("question").textContent = q.question;
+
+    document.getElementById("questionImage").src = q.image;
+
+    let answersDiv = document.getElementById("answers");
+
+    answersDiv.innerHTML = "";
+
+    q.answers.forEach((answer, index) => {
+
+        let button = document.createElement("button");
+
+        button.textContent = answer;
+
+        button.onclick = function() {
+            checkAnswer(index);
+        };
+
+        answersDiv.appendChild(button);
+    });
+}
+
+
+/* =========================
+   CHECK ANSWER
+========================= */
+
+function checkAnswer(index) {
+
+    // يمنع الإجابة أكثر من مرة
+    if (answered === true) {
+        return;
+    }
+
+    answered = true;
+
+    let wrongImage = document.getElementById("wrongImage");
+
+    if (index === questions[currentQuestion].correct) {
+
+        // إجابة صحيحة
+        score++;
+
+        wrongImage.style.display = "none";
+
+        alert("Bonne réponse !");
+
+    } else {
+
+        // إجابة غالطة
+        wrongImage.style.display = "block";
+
+        alert("Mauvaise réponse !");
+
+    }
+
+    document.getElementById("score").textContent =
+        "Score : " + score;
+}
+
+
+/* =========================
+   QUESTION SUIVANTE
+========================= */
+function nextQuestion() {
+
+    currentQuestion++;
+
+    if (currentQuestion < questions.length) {
+
+        showQuestion();
+
+    } else {
+
+        if (score > 10) {
+
+            document.querySelector(".quiz").innerHTML = `
+
+                <h1>🎉 Quiz terminé !</h1>
+
+                <h2>Score final</h2>
+
+                <div style="
+                    font-size: 45px;
+                    font-weight: bold;
+                    margin: 20px;
+                ">
+                    ${score} / ${questions.length}
+                </div>
+
+                <p style="font-size: 22px;">
+                    ANDIAMOOOOOOO 🔥
+                </p>
+
+                <video
+    src="gooba_clap.mp4"
+    autoplay
+    muted
+    playsinline
+    loop
+    style="
+        width: 180px;
+        height: 180px;
+        object-fit: cover;
+        border-radius: 20px;
+        display: block;
+        margin: 20px auto;
+    ">
+</video>
+
+                <br><br>
+
+                <button
+                    onclick="location.href='index.html'"
+                    style="
+                        background:black;
+                        color:white;
+                        border:none;
+                        padding:12px 25px;
+                        border-radius:8px;
+                        font-size:18px;
+                        cursor:pointer;
+                    ">
+                    Rejouer
+                </button>
+            `;
+            
+
+        }  else {
+
+    document.querySelector(".quiz").innerHTML = `
+
+        <h1>Quiz terminé !</h1>
+
+        <h2>Score final</h2>
+
+        <div style="
+            font-size: 45px;
+            font-weight: bold;
+            margin: 20px;
+        ">
+            ${score} / ${questions.length}
+        </div>
+
+        <p style="font-size: 22px;">
+             yraaaaaaaaw7777 !
+        </p>
+
+        <video
+            src="snaptik_7633345456659041544_v3.mp4"
+            autoplay
+            muted
+            playsinline
+            loop
+            style="
+                width: 180px;
+                height: 180px;
+                object-fit: cover;
+                border-radius: 20px;
+                display: block;
+                margin: 20px auto;
+            ">
+        </video>
+
+        <button
+            onclick="location.href='index.html'"
+            style="
+                background:black;
+                color:white;
+                border:none;
+                padding:12px 25px;
+                border-radius:8px;
+                font-size:18px;
+                cursor:pointer;
+            ">
+            Rejouer
+        </button>
+    `;
+}
+        }
+    }
+
+function showQuestion() {
+    answered = false;
+
+    document.getElementById("wrongImage").style.display = "none";
+    document.getElementById("correctImage").style.display = "none";
+
+    let q = questions[currentQuestion];
+
+    document.getElementById("question").textContent = q.question;
+    document.getElementById("questionImage").src = q.image;
+
+    let answersDiv = document.getElementById("answers");
+    answersDiv.innerHTML = "";
+
+    q.answers.forEach((answer, index) => {
+        let button = document.createElement("button");
+
+        button.textContent = answer;
+
+        button.onclick = function() {
+            checkAnswer(index);
+        };
+
+        answersDiv.appendChild(button);
+    });
+}
+
+function checkAnswer(index) {
+
+    if (answered === true) {
+        return;
+    }
+
+    answered = true;
+
+    let wrongImage = document.getElementById("wrongImage");
+    let correctImage = document.getElementById("correctImage");
+
+    wrongImage.style.display = "none";
+    correctImage.style.display = "none";
+
+    if (index === questions[currentQuestion].correct) {
+
+        score++;
+
+        correctImage.style.display = "block";
+
+        alert("Bonne réponse !");
+
+    } else {
+
+        wrongImage.style.display = "block";
+
+        alert("Mauvaise réponse !");
+    }
+
+    document.getElementById("score").textContent =
+        "Score : " + score;
+}
+
+
+/* =========================
+   START QUIZ
+========================= */
+
+showQuestion();
+
+</script>
+
+</body>
+</html>
